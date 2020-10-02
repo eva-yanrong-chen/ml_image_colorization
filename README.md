@@ -14,7 +14,7 @@ We will use clustering algorithms to gain insight into our dataset. We also woul
 ##### Supervised
 We will frame the problem as a multinomial classification with predefined AB color pairs for each pixel.  Our model of choice will be a Convolutional Neural Network<sup>[1]</sup><sup>[2]</sup><sup>[3]</sup><sup>[4]</sup> to extract semantic features and map it onto a per pixel probability distribution over all the AB pairs. We will then try a variety of techniques to choose the color per pixel, be it taking the color with the highest probability per pixel or taking a mode over neighboring pixels.
 
-<imgsrc="NetworkDiagram.jpg">
+![Network Diagram](NetworkDiagram.jpg "Network Diagram")
 
 ### Potential results
 
