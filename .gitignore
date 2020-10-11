@@ -3,5 +3,5 @@ images/mirflickr
 images/mirflickr25k_annotations_v080
 images/*
 
-*.DS_Store
+*/.DS_Store
 env
