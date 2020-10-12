@@ -1,7 +1,10 @@
 .idea/
+
 images/mirflickr
 images/mirflickr25k_annotations_v080
 images/*
+
+*.npy
 
 *.DS_Store
 env
