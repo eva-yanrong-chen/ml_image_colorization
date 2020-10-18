@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+import matplotlib.pyplot as plt
 
 DATA_PATH = "../images/mirflickr/"
 
@@ -63,10 +64,29 @@ def retrieve_data():
     return images
 
 
-# usable dataset as a variable
-dataset = retrieve_data()
+def filter_bw(dataset):
+    a = np.mean(np.abs(dataset[:, :, :, 1] - 128), axis=(1, 2))
+    b = np.mean(np.abs(dataset[:, :, :, 2] - 128), axis=(1, 2))
+    filtered_data = dataset[(a > 20) | (b > 20)]
+    return filtered_data
 
+
+# def split_train_val_test(dataset):
+#TODO: @Neethu implement
+#     # split dataset into Training Set(80%), Validation Set(10%), and Testing
+#     # Set(10%)
+#     # Using random function to get the indeces and split the dataset
+#     # Return 3 arrays of shape (x, 250, 250, 3)
+
+    
+# def load_category_data(category):
+#TODO: @Eric implement
 
 # Main method for testing
 if __name__ == "__main__":
+    # usable dataset as a variable - shape = (m:24676, H:256, W:256, channel:3)
+    dataset = retrieve_data()
+    filter_data = filter_bw(dataset)
+    
     print(dataset.shape)
+    print(filter_data.shape)
