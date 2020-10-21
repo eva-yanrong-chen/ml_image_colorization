@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
+import random
 
 DATA_PATH = "../images/mirflickr/"
 
@@ -71,12 +72,26 @@ def filter_bw(dataset):
     return filtered_data
 
 
-# def split_train_val_test(dataset):
+def split_train_val_test(dataset):
 #TODO: @Neethu implement
 #     # split dataset into Training Set(80%), Validation Set(10%), and Testing
 #     # Set(10%)
 #     # Using random function to get the indeces and split the dataset
 #     # Return 3 arrays of shape (x, 250, 250, 3)
+
+    #idx = np.random.randint(0, dataset.shape[0], size=int(dataset.shape[0] * 0.8))
+    idx = list(range(0, int(dataset.shape[0] * 0.8)))
+    training = dataset[idx,:,:,:]
+
+    #idx2 = np.random.randint(0, temp.shape[0], size=int(dataset.shape[0] * 0.1))
+    idx2 = list(range(idx[-1], idx[-1] + int(dataset.shape[0] * 0.1)))
+    validation = dataset[idx2,:,:,:]
+
+    #idx3 = np.random.randint(0, temp.shape[0], size=int(dataset.shape[0] * 0.1))
+    idx3 = list(range(idx2[-1], idx2[-1] + int(dataset.shape[0] * 0.1)))
+    testing = dataset[idx3,:,:,:]
+
+    return training, validation, testing
 
     
 # def load_category_data(category):
@@ -86,7 +101,12 @@ def filter_bw(dataset):
 if __name__ == "__main__":
     # usable dataset as a variable - shape = (m:24676, H:256, W:256, channel:3)
     dataset = retrieve_data()
+
     filter_data = filter_bw(dataset)
+    training, validation, testing = split_train_val_test(dataset)
     
     print(dataset.shape)
     print(filter_data.shape)
+    print(validation.shape)
+    print(training.shape)
+    print(testing.shape)
