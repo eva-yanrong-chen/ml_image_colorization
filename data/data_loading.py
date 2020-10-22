@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import random
 
 DATA_PATH = "../images/mirflickr/"
+ANNOTATION_PATH = "../images/mirflickr25k_annotations_v080/"
 
 
 # Takes in jpg file, returns file as opencv array
@@ -21,13 +22,23 @@ def readfile(file, dim=256):
 
     # if not, discard the image
     else:
-        return None
+        return np.empty((dim, dim, C))
 
 
 def load_dataset(path=DATA_PATH):
     import glob
+    import re
+    import math
+    from pathlib import Path
+    file_pattern = re.compile(r'.*?(\d+).*?')
 
-    data_files = glob.glob(path + "*.jpg")
+    def get_order(file):
+        match = file_pattern.match(Path(file).name)
+        if not match:
+            return math.inf
+        return int(match.groups()[0])
+
+    data_files = sorted(glob.glob(path + "*.jpg"), key=get_order)
 
     # min H  = 42
     # min W = 118
@@ -96,6 +107,19 @@ def split_train_val_test(dataset):
     
 # def load_category_data(category):
 #TODO: @Eric implement
+def find_by_class(dataset, annotation):
+
+    import os
+    path = os.path.join(ANNOTATION_PATH, "{}.txt".format(annotation))
+
+    # Retrieve all the indexes
+    with open(path) as f:
+        idxs = f.readlines()
+
+    # must convert to int and subtract 1 for 0-based indexing
+    idxs =[int(i.strip()) - 1 for i in idxs]
+
+    return dataset[idxs]
 
 # Main method for testing
 if __name__ == "__main__":
