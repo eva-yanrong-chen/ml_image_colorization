@@ -3,8 +3,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import random
 
-DATA_PATH = "../images/mirflickr/"
-ANNOTATION_PATH = "../images/mirflickr25k_annotations_v080/"
+DATA_PATH = "images/mirflickr/"
+ANNOTATION_PATH = "images/mirflickr25k_annotations_v080/"
 
 
 # Takes in jpg file, returns file as opencv array
