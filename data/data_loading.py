@@ -59,21 +59,66 @@ def load_dataset(path=DATA_PATH):
     images = np.array(images_list)
     return images
 
+def load_dataset_annotation(annotation, path=DATA_PATH):
+    import glob
+    import re
+    import math
+    import os
+    from pathlib import Path
+    file_pattern = re.compile(r'.*?(\d+).*?')
 
-def retrieve_data():
+    def get_order(file):
+        match = file_pattern.match(Path(file).name)
+        if not match:
+            return math.inf
+        return int(match.groups()[0])
+
+    data_files = sorted(glob.glob(path + "*.jpg"), key=get_order)
+    data_files = np.array(data_files)
+
+    # Filter by annotations
+    data_files = find_by_class(data_files, annotation)
+
+    # min H  = 42
+    # min W = 118
+
+    images_list = list()
+
+    count = 0
+    for i, file in enumerate(data_files):
+        image = readfile(file)
+        if image is not None:
+            images_list.append(image)
+
+        # Report how many images have been processed
+        count += 1
+        if count % 100 == 0:
+            print("Finished processing image {}".format(count))
+
+    images = np.uint8(images_list)
+    return images
+
+def retrieve_data(category):
 
     try:
-        images = np.load("processed_images.npy")
+        train = np.load("processed_images_{}_train.npy".format(category))
+        val = np.load("processed_images_{}_val.npy".format(category))
+        test = np.load("processed_images_{}_test.npy".format(category))
         print("Retrieving stored images")
 
     except:
         print("Unable to find save")
-        print("Processing images from scratch")
-        images = load_dataset()
-        np.save("processed_images.npy", images)
+        print("Processing images for {}".format(category))
+        images = load_dataset_annotation(category)
+        images = filter_bw(images)
+        train, val, test = split_train_val_test(images)
+
+        np.save("processed_images_{}_train.npy".format(category), train)
+        np.save("processed_images_{}_val.npy".format(category), val)
+        np.save("processed_images_{}_test.npy".format(category), test)
         print("Saved processed images")
 
-    return images
+    return train, val, test
 
 
 def filter_bw(dataset):
@@ -124,13 +169,21 @@ def find_by_class(dataset, annotation):
 # Main method for testing
 if __name__ == "__main__":
     # usable dataset as a variable - shape = (m:24676, H:256, W:256, channel:3)
-    dataset = retrieve_data()
+    train, val, test = retrieve_data("bird")
 
-    filter_data = filter_bw(dataset)
-    training, validation, testing = split_train_val_test(dataset)
-    
-    print(dataset.shape)
-    print(filter_data.shape)
-    print(validation.shape)
-    print(training.shape)
-    print(testing.shape)
+    image = test[4]
+
+    print(image.dtype)
+
+    image = cv2.cvtColor(image, cv2.COLOR_LAB2BGR)
+    cv2.imshow("", image)
+    cv2.waitKey(0)
+    #
+    # filter_data = filter_bw(dataset)
+    # training, validation, testing = split_train_val_test(dataset)
+    #
+    # print(dataset.shape)
+    # print(filter_data.shape)
+    # print(validation.shape)
+    # print(training.shape)
+    # print(testing.shape)
