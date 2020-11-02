@@ -101,9 +101,9 @@ def load_dataset_annotation(annotation, path=DATA_PATH):
 def retrieve_data(category):
 
     try:
-        train = np.load("processed_images_{}_train.npy".format(category))
-        val = np.load("processed_images_{}_val.npy".format(category))
-        test = np.load("processed_images_{}_test.npy".format(category))
+        train = np.load("data/processed_images_{}_train.npy".format(category))
+        val = np.load("data/processed_images_{}_val.npy".format(category))
+        test = np.load("data/processed_images_{}_test.npy".format(category))
         print("Retrieving stored images")
 
     except:
@@ -113,9 +113,9 @@ def retrieve_data(category):
         images = filter_bw(images)
         train, val, test = split_train_val_test(images)
 
-        np.save("processed_images_{}_train.npy".format(category), train)
-        np.save("processed_images_{}_val.npy".format(category), val)
-        np.save("processed_images_{}_test.npy".format(category), test)
+        np.save("data/processed_images_{}_train.npy".format(category), train)
+        np.save("data/processed_images_{}_val.npy".format(category), val)
+        np.save("data/processed_images_{}_test.npy".format(category), test)
         print("Saved processed images")
 
     return train, val, test

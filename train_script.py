@@ -4,21 +4,19 @@ import numpy as np
 from src.model import Model
 from data.data_loading import retrieve_data
 
-train, val, test = retrieve_data("bird")
-train = np.transpose(train, (0, 3, 1, 2))
-train = torch.tensor(train)
-train_float = train / 255
-model = Model()
-y = model(train_float[:3, 0:1, :, :])
-print(y['out'][0].shape, y['aux'][0].shape)
+from src.util import format_model_input, show_cv2_image
 
-x1 = torch.cat((train_float[0, 0:1, :, :], y['out'][0]), axis=0)
-image = (x1 * 255)
-image = np.uint8(image.detach())
-image = np.transpose(image, (1, 2, 0))
+if __name__  =='__main__':
 
-print(image.dtype)
+    train, val, test = retrieve_data("bird")
 
-image = cv2.cvtColor(image, cv2.COLOR_LAB2BGR)
-cv2.imshow("", image)
-cv2.waitKey(0)
+    m_input, _ = format_model_input(train)
+    model = Model()
+    print("Starting model")
+    y = model(m_input[:3])
+    print("Finished model")
+    # print(y['out'][0].shape, y['aux'][0].shape)
+
+    x1 = torch.cat((m_input[0], y['out'][0]), axis=0)
+
+    show_cv2_image(x1)
