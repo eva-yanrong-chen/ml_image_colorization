@@ -15,7 +15,8 @@ def evaluate_images(annotation):
     m_input, labels = format_model_input(val)
 
     model = Model()
-    model.load('weights/{}.pt'.format(annotation))
+    model.load_state_dict(torch.load('weights/{}.pt'.format(annotation)))
+    model.eval()
 
     while True:
         i = np.random.randint(len(m_input))
