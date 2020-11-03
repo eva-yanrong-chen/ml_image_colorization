@@ -8,6 +8,7 @@ from torch.utils.data import Dataset, DataLoader
 from src.util import format_model_input, show_cv2_image
 from data.dataloader import ImageDataset
 
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 def evaluate_images(annotation):
     train, val, test = retrieve_data(annotation)

@@ -12,12 +12,16 @@ BATCH_SIZE = 4
 LEARNING_RATE = 1e-4
 NUM_EPOCHS = 5
 
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
 def train_model(trainloader, optimizer, net, criterion, epochs=NUM_EPOCHS):
     for epoch in range(epochs):  # loop over the dataset multiple times
         running_loss = 0.0
         for i, data in enumerate(trainloader):
             # get the inputs; data is a list of [inputs, labels]
             inputs, labels = data
+            inputs = inputs.to(device)
+            labels = labels.to(device)
             # zero the parameter gradients
             optimizer.zero_grad()
             # forward + backward + optimize
@@ -40,6 +44,7 @@ def train_by_annotation(annotation):
     m_input, labels = format_model_input(train)
 
     model = Model()
+    model.to(device)
 
     train_dataset = ImageDataset(m_input, labels)
 
