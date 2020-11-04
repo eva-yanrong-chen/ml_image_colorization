@@ -247,4 +247,3 @@ if __name__ == "__main__":
     plt.axvline(x=k, color="k", linestyle="--")
     plt.axhline(y=95, color="r", linestyle="--")
     ax = plt.plot(explained_variance)
-    ax.waitKey(0)
