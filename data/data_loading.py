@@ -166,6 +166,28 @@ def find_by_class(dataset, annotation):
 
     return dataset[idxs]
 
+def do_PCA(img):
+    pca1 = PCA(0.99)
+    n, d, c = img.shape
+    max_dim = 0
+    
+    for i in range(0, c):
+        a, b = pca1.fit_transform(img[:, :, i]).shape
+        max_dim = max(max_dim, b)
+    
+    new_dim_image = np.zeros((n, d, c))
+    
+    pca2 = PCA(n_components = max_dim)
+    
+    for i in range(0, c):
+        temp = pca2.fit_transform(img[:, :, i])
+        approx = pca2.inverse_transform(temp)
+        #print(approx.shape)
+        approx = approx.reshape(n, d)
+        new_dim_image[:, :, i] = approx
+    
+    return new_dim_image
+
 # Main method for testing
 if __name__ == "__main__":
     # usable dataset as a variable - shape = (m:24676, H:256, W:256, channel:3)
