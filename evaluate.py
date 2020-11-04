@@ -27,8 +27,11 @@ def evaluate_images(annotation):
         y_t = labels[i:i+1]
         y = model(x)
 
+        loss = model.loss_criterion(y['out'][0], y_t[0])
         created = torch.cat((x[0], y['out'][0]), axis=0)
         ground_t = torch.cat((x[0], y_t[0]), axis=0)
+
+        print("Loss: {}".format(loss))
 
         show_cv2_image(ground_t)
         show_cv2_image(created)
