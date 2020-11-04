@@ -209,3 +209,11 @@ if __name__ == "__main__":
     # print(validation.shape)
     # print(training.shape)
     # print(testing.shape)
+    
+    #test PCA reduction
+    lower_dim_img = do_PCA(image)
+    print(lower_dim_img.shape)
+    reduced_image = np.uint8(lower_dim_img)
+    #reduced_image = cv2.cvtColor(reduced_image, cv2.COLOR_LAB2BGR)
+    cv2.imshow("", reduced_image)
+    cv2.waitKey(0)
