@@ -18,7 +18,10 @@ We used PCA to try to reduce dimensionality of the images and then feed it into 
 ###### PCA
 We performed PCA on the images to compress the images. We tried different values of retained variance and performed visual inspection on the images to see which was closest to the original. We found that 98% retained variance produces an image close to the orignal and having a size of only 20% of the original. 
 
+Original:  
 ![Original](pics/PCA_original.jpg "PCA Original")
+
+Reduced:  
 ![Reduced](pics/PCA_reduced.jpg "PCA Reduced")
 
 ##### Supervised
@@ -32,9 +35,9 @@ As an outcome of this project, we aim to create realistic colorized pictures fro
 
 For now, we trained only on bird images. After training 10 epochs on a training set of ~600 images with learning rate 5e-5 and batch size 16, we managed to obtain a training loss of 0.003. Attached are some of our results from the validation set:
 
-![Result1](pics/Result1.jpg "Result1")
-![Result2](pics/Result2.jpg "Result2")
-![Result3](pics/Result3.jpg "Result3")
+![Result1](pics/Result1.png "Result1")
+![Result2](pics/Result2.png "Result2")
+![Result3](pics/Result3.png "Result3")
 
 ### Discussion/Conclusions 
 Due to the complex nature of the process of converting grayscale images to their full correct color image, our primary goal is to get some sort of semblance of the true color to the image, not necessarily the fully saturated version. 
