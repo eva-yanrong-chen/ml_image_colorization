@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 import random
+from sklearn import decomposition as dc
 
 DATA_PATH = "images/mirflickr/"
 ANNOTATION_PATH = "images/mirflickr25k_annotations_v080/"
@@ -166,6 +167,48 @@ def find_by_class(dataset, annotation):
 
     return dataset[idxs]
 
+def do_PCA(img, variance = .95):
+    pca1 = dc.PCA()
+    n, d, c = img.shape
+    max_dim = 0
+
+    #flatten the image
+    flattened_image = np.reshape(img,(n,d*c))
+
+    #PCA for the input image
+    pca1.fit(flattened_image)
+
+    #Getting cumulative Variance
+    cumm_var = np.cumsum(pca1.explained_variance_ratio_)
+
+    # Check how many eigens explains variance
+    k = np.argmax(cumm_var > variance )
+    # print("Number of component explaining variance = "+str(k))
+
+    ## reconstruct the image
+    PCAF = dc.PCA(n_components=k).fit(flattened_image)
+
+    ## rebuild the compressed image
+    Compressed_Image = PCAF.inverse_transform(PCAF.transform(flattened_image))
+
+    ## Change to original colored shape
+    Compressed_Image = np.reshape(Compressed_Image, (n,d,c))
+
+    final_cum_variance = PCAF.explained_variance_ratio_
+
+    N = img.shape[0]
+    D = img.shape[1]
+    if(len(img.shape) == 3):
+        denom = N*D*img.shape[2]
+        num = k*(1+N+3*D)
+    else:
+        denom = N*D
+        num = k*(1+N+D)
+
+    compression_ratio = num/denom
+
+    return Compressed_Image, compression_ratio, final_cum_variance, k
+
 # Main method for testing
 if __name__ == "__main__":
     # usable dataset as a variable - shape = (m:24676, H:256, W:256, channel:3)
@@ -187,3 +230,20 @@ if __name__ == "__main__":
     # print(validation.shape)
     # print(training.shape)
     # print(testing.shape)
+
+    #test PCA reduction
+    lower_dim_img, compression_ratio, explained_variance, k = do_PCA(image, 0.98)
+    print(lower_dim_img.shape)
+    reduced_image = np.uint8(lower_dim_img)
+    #reduced_image = cv2.cvtColor(reduced_image, cv2.COLOR_LAB2BGR)
+    cv2.imshow("", reduced_image)
+    cv2.waitKey(0)
+
+    # # Create graph of the variance
+    # plt.figure(figsize=[10,5])
+    # plt.title('Cumulative Explained Variance explained by the components')
+    # plt.ylabel('Cumulative Explained variance')
+    # plt.xlabel('Principal components')
+    # plt.axvline(x=k, color="k", linestyle="--")
+    # plt.axhline(y=95, color="r", linestyle="--")
+    # ax = plt.plot(explained_variance)
