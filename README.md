@@ -13,10 +13,10 @@ We used the MIR-FLICKR 25k dataset for training, evaluation and testing. As the 
 ### Methods 
 
 ##### Unsupervised 
-We used PCA to try to reduce dimensionality of the images and then feed it into our supervised learning method i.e. the Convolution Neural Network. 
+We used PCA to reduce dimensionality of the images and then feed it into our supervised learning method i.e. the Convolution Neural Network. 
 
 ###### PCA
-We performed PCA on the images to compress the images. We tried different values of retained variance and performed visual inspection on the images to see which was closest to the original. We found that 98% retained variance produces an image close to the orignal and having a size of only 20% of the original. 
+We performed PCA on the images to compress the images. We tried different values of retained variance and performed visual inspection on the images to see which was closest to the original. We found that 98% retained variance produces an image close to the orignal and had a size of 20% of the original. 
 
 Original:  
 ![Original](pics/PCA_original.jpg "PCA Original")
@@ -26,7 +26,7 @@ Reduced:
 
 ##### Supervised
 <!-- We aim to frame the problem as a multinomial classification with predefined AB color pairs for each pixel.  Our model of choice will be a Convolutional Neural Network<sup>[1]</sup><sup>[2]</sup><sup>[3]</sup><sup>[4]</sup> to extract semantic features and map it onto a per pixel probability distribution over all the AB pairs. We will then try a variety of techniques to choose the color per pixel, be it taking the color with the highest probability per pixel or taking a mode over neighboring pixels. -->
-Currently, we are framing the problem as a regression problem over both the A and B space. Our model of choice is a fully convolutional network with a pretrained resnet-50 as the backbone. The network aims to extract semantic features through the downsampling part of the model and map these features back into color palletes on the upsampling part. To train the network, we apply Regression loss using Mean Squared Error on the true colors of the image. 
+Currently, we are framing the problem as a regression problem over both the A and B space. Our model of choice is a fully convolutional network with a pretrained resnet-50 as the backbone. The network aims to extract semantic features through the downsampling part of the model and map these features back into color palletes in the upsampling part of the model. To train the network, we apply Regression loss using Mean Squared Error on the true colors of the image. 
 
 ![Network Diagram](pics/NetworkDiagram.jpg "Network Diagram")
 
@@ -54,3 +54,5 @@ One thing we noticed about our generated images was that many of them have a blu
 3. Zhang, R., Isola, P., & Efros, A. A. (2016). Colorful Image Colorization. Computer Vision – ECCV 2016 Lecture Notes in Computer Science, 649-666. doi:10.1007/978-3-319-46487-9_40 
 
 4. Hwang, J. (2016). Image Colorization with Deep Convolutional Neural Networks. 
+
+5. Link to dataset - http://press.liacs.nl/mirflickr/mirdownload.html
