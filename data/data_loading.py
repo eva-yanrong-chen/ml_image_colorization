@@ -167,47 +167,59 @@ def find_by_class(dataset, annotation):
 
     return dataset[idxs]
 
-def do_PCA(img, variance = .95):
-    pca1 = dc.PCA()
-    n, d, c = img.shape
-    max_dim = 0
+# def do_PCA(img, variance = .95):
+#     pca1 = dc.PCA()
+#     n, d, c = img.shape
+#     max_dim = 0
 
-    #flatten the image
-    flattened_image = np.reshape(img,(n,d*c))
+#     #flatten the image
+#     flattened_image = np.reshape(img,(n,d*c))
 
-    #PCA for the input image
-    pca1.fit(flattened_image)
+#     #PCA for the input image
+#     pca1.fit(flattened_image)
 
-    #Getting cumulative Variance
-    cumm_var = np.cumsum(pca1.explained_variance_ratio_)
+#     #Getting cumulative Variance
+#     cumm_var = np.cumsum(pca1.explained_variance_ratio_)
 
-    # Check how many eigens explains variance
-    k = np.argmax(cumm_var > variance )
-    # print("Number of component explaining variance = "+str(k))
+#     # Check how many eigens explains variance
+#     k = np.argmax(cumm_var > variance )
+#     # print("Number of component explaining variance = "+str(k))
 
-    ## reconstruct the image
-    PCAF = dc.PCA(n_components=k).fit(flattened_image)
+#     ## reconstruct the image
+#     PCAF = dc.PCA(n_components=k).fit(flattened_image)
 
-    ## rebuild the compressed image
-    Compressed_Image = PCAF.inverse_transform(PCAF.transform(flattened_image))
+#     ## rebuild the compressed image
+#     Compressed_Image = PCAF.inverse_transform(PCAF.transform(flattened_image))
 
-    ## Change to original colored shape
-    Compressed_Image = np.reshape(Compressed_Image, (n,d,c))
+#     ## Change to original colored shape
+#     Compressed_Image = np.reshape(Compressed_Image, (n,d,c))
 
-    final_cum_variance = PCAF.explained_variance_ratio_
+#     final_cum_variance = PCAF.explained_variance_ratio_
 
-    N = img.shape[0]
-    D = img.shape[1]
-    if(len(img.shape) == 3):
-        denom = N*D*img.shape[2]
-        num = k*(1+N+3*D)
-    else:
-        denom = N*D
-        num = k*(1+N+D)
+#     N = img.shape[0]
+#     D = img.shape[1]
+#     if(len(img.shape) == 3):
+#         denom = N*D*img.shape[2]
+#         num = k*(1+N+3*D)
+#     else:
+#         denom = N*D
+#         num = k*(1+N+D)
 
-    compression_ratio = num/denom
+#     compression_ratio = num/denom
 
-    return Compressed_Image, compression_ratio, final_cum_variance, k
+#     return Compressed_Image, compression_ratio, final_cum_variance, k
+
+# def cluster_pixels(image, K):
+    
+#     im_height, im_width, im_channel = image.shape
+#     flat_img = np.reshape(image, [-1, im_channel]).astype(np.float32)
+#     gamma, (pi, mu, sigma) = GMM(flat_img, K = K, max_iters = 100)()
+#     cluster_ids = np.argmax(gamma, axis=1)
+#     centers = mu
+
+#     gmm_img = np.reshape(centers[cluster_ids], (im_height, im_width, im_channel))
+    
+#     return gmm_img
 
 # Main method for testing
 if __name__ == "__main__":
