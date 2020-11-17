@@ -12,3 +12,7 @@ env
 .vscode
 
 __pycache__
+
+weights
+
+data

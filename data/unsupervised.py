@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import random
 from sklearn import decomposition as dc
-import sklearn
+from sklearn import cluster
 
 def do_PCA(img, variance = .95):
     pca1 = dc.PCA()
@@ -47,21 +47,30 @@ def do_PCA(img, variance = .95):
 
     return Compressed_Image, compression_ratio, final_cum_variance, k
 
-def cluster_pixels(images, K):
+def cluster_pixels(images, K=50, kmeans=None):
     
     #pass in preprocessed images
     N, H, W, C = images.shape
     flat_images = np.reshape(images, [-1, C]).astype(np.float32)
-    kmeans = sklearn.cluster.KMeans(n_clusters = K)
-    images_new = kmeans.fit_transform(flat_images)
 
-    reshaped_images = np.reshape(images_new, (H, W, C))
+    if kmeans is None:
+        kmeans = cluster.KMeans(n_clusters = K)
+        images_new = kmeans.fit_predict(flat_images)
+    else:
+        images_new = kmeans.predict(flat_images)
+
+    centers = kmeans.cluster_centers_
+
+    new_pixels = centers[images_new]
+
+    reshaped_images = np.reshape(new_pixels, (N, H, W, C))
     
-    return reshaped_images
+    return kmeans, reshaped_images
 
 #def find_optimal_pallete(images, lower_bound = 50, upper_bound = 200):
     #return an array of color values and the number of color values
     #for each k, try to cluster and see what happens
+
 
 
 
