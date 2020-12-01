@@ -4,6 +4,7 @@ import numpy as np
 from src.model import Model
 from data.data_loading import retrieve_data
 from torch.utils.data import Dataset, DataLoader
+from joblib import load
 
 from src.util import format_model_input, show_cv2_image
 from data.dataloader import ImageDataset
@@ -19,7 +20,7 @@ def train_model(trainloader, optimizer, net, criterion, epochs=NUM_EPOCHS):
         running_loss = 0.0
         for i, data in enumerate(trainloader):
             # get the inputs; data is a list of [inputs, labels]
-            inputs, labels = data
+            inputs, labels, _ = data
             inputs = inputs.to(device)
             labels = labels.to(device)
             # zero the parameter gradients
@@ -31,35 +32,36 @@ def train_model(trainloader, optimizer, net, criterion, epochs=NUM_EPOCHS):
             optimizer.step()
             # print statistics
             running_loss += loss.item()
-            if i % 20 == 19:  # print every 200 mini-batches
-                print('[%d, %5d] loss: %.3f' %
-                      (epoch + 1, i + 1, running_loss / 20))
-                running_loss = 0.0
-            print("Finished iteration {}".format(i))
+            # if i % 20 == 19:  # print every 200 mini-batches
+            print('[%d, %5d] loss: %.3f' %
+                  (epoch + 1, i + 1, running_loss / 20))
+            running_loss = 0.0
+            # print("Finished iteration {}".format(i))
     print('Finished Training')
 
 
 def train_by_annotation(annotation):
     train, val, test = retrieve_data(annotation)
-    m_input, labels = format_model_input(train)
 
     model = Model()
     model.to(device)
 
-    train_dataset = ImageDataset(m_input, labels)
+    # Get kmeans clustering for particular annotation
+    kmeans = load('weights/{}_kmeans.joblib'.format(annotation))
+    train_dataset = ImageDataset(train, kmeans)
 
     dataloader = DataLoader(train_dataset, batch_size=BATCH_SIZE,
                             shuffle=True, num_workers=0)
 
     optimizer = torch.optim.Adam(model.parameters(), lr=LEARNING_RATE)
-    criterion = torch.nn.MSELoss()
+    criterion = torch.nn.CrossEntropyLoss()
 
     train_model(dataloader, optimizer, model, criterion)
 
     torch.save(model.state_dict(), "weights/{}.pt".format(annotation))
 
 if __name__  =='__main__':
-    train_by_annotation('bird')
+    train_by_annotation('plant_life')
 
     # train, val, test = retrieve_data("bird")
     #

@@ -67,6 +67,16 @@ def cluster_pixels(images, K=50, kmeans=None):
     
     return kmeans, reshaped_images
 
+def cluster_classification(images, kmeans):
+
+    N, H, W, C = images.shape
+    flat_images = np.reshape(images, [-1, C]).astype(np.float32)
+
+    images_new = kmeans.predict(flat_images)
+    centers = kmeans.cluster_centers_
+    class_images = np.reshape(images_new, (N, H, W))
+
+    return centers, class_images
 #def find_optimal_pallete(images, lower_bound = 50, upper_bound = 200):
     #return an array of color values and the number of color values
     #for each k, try to cluster and see what happens
