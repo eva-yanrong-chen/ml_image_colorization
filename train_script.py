@@ -9,7 +9,7 @@ from joblib import load
 from src.util import format_model_input, show_cv2_image
 from data.dataloader import ImageDataset
 
-BATCH_SIZE = 4
+BATCH_SIZE = 1
 LEARNING_RATE = 1e-4
 NUM_EPOCHS = 5
 
@@ -32,11 +32,11 @@ def train_model(trainloader, optimizer, net, criterion, epochs=NUM_EPOCHS):
             optimizer.step()
             # print statistics
             running_loss += loss.item()
-            # if i % 20 == 19:  # print every 200 mini-batches
-            print('[%d, %5d] loss: %.3f' %
-                  (epoch + 1, i + 1, running_loss / 20))
-            running_loss = 0.0
-            # print("Finished iteration {}".format(i))
+            if i % 20 == 19:  # print every 200 mini-batches
+                print('[%d, %5d] loss: %.3f' %
+                      (epoch + 1, i + 1, running_loss / 20))
+                running_loss = 0.0
+            #print("Finished iteration {}".format(i))
     print('Finished Training')
 
 
@@ -48,7 +48,7 @@ def train_by_annotation(annotation):
 
     # Get kmeans clustering for particular annotation
     kmeans = load('weights/{}_kmeans.joblib'.format(annotation))
-    train_dataset = ImageDataset(train, kmeans)
+    train_dataset = ImageDataset(train[:10], kmeans)
 
     dataloader = DataLoader(train_dataset, batch_size=BATCH_SIZE,
                             shuffle=True, num_workers=0)
